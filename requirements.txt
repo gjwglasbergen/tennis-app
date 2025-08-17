@@ -1,5 +1,4 @@
 flask
 tennis
 flask-socketio
-uuid
 Flask-SQLAlchemy
