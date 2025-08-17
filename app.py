@@ -5,6 +5,8 @@ import uuid
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "tennisgoof"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/app.db"
+db = SQLAlchemy(app)
 
 socketio = SocketIO(app)
 
