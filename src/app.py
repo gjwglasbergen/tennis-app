@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from models import db, MatchModel
+from tennis.match import TennisMatch
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "tennisgoof"
