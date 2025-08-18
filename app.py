@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 
@@ -12,12 +12,17 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def home():
-    return "Hello world test socket"
+    return render_template("index.html")
 
 
 @app.route("/create-match")
 def create_match():
     return "Hier kun je een match aanmaken"
+
+
+@app.route("/matches")
+def view_matches():
+    return "Hier kun je wedstrijden selecteren en bekijken"
 
 
 @app.route("/match/<int:match_id>")
