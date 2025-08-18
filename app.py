@@ -17,7 +17,7 @@ def home():
 
 @app.route("/create-match")
 def create_match():
-    return "Hier kun je een match aanmaken"
+    return render_template("creatematch.html")
 
 
 @app.route("/matches")
