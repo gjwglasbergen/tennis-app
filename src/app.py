@@ -1,11 +1,15 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-from flask_sqlalchemy import SQLAlchemy
+from models import db, MatchModel
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "tennisgoof"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/app.db"
-db = SQLAlchemy(app)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../data/app.db"
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 socketio = SocketIO(app)
 
