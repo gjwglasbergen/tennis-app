@@ -3,8 +3,8 @@
 
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Maak een nieuwe tenniswedstrijd aan</h2>
+<div class="container d-flex flex-column flex-fill overflow-auto py-3">
+    <h2 class="mb-4">Maak een nieuwe tenniswedstrijd aan</h2>
     <form method="POST" action="{{ url_for('create_match') }}">
         <div class="mb-3">
             <label for="player1" class="form-label">Speler 1</label>
@@ -36,7 +36,8 @@
                 <option value="False">Nee</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Maak wedstrijd aan</button>
+        <button type="submit" class="btn btn-primary mt-2">Maak wedstrijd aan</button>
     </form>
 </div>
 {% endblock %}
+
