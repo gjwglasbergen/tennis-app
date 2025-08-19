@@ -17,6 +17,11 @@ class MatchModel(db.Model):
     active = db.Column(db.Boolean, nullable=False, default=False)
     data = db.Column(db.LargeBinary, nullable=False)
 
+    def __init__(self, player1: str, player2: str, active: bool = False):
+        self.player1 = player1
+        self.player2 = player2
+        self.active = active
+
     def set_match(self, match_object):
         self.data = pickle.dumps(match_object)
 
