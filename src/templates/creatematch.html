@@ -1,3 +1,17 @@
 {% extends "base.html"%}
 {% block title%} Maak een wedstrijd aan {% endblock%}
 {% block header%} Maak een wedstrijd aan {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <label for="player 1" class="form-label">Speler 1</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+
+    <label for="player 1" class="form-label">Speler 2</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+
+    <button class='class="btn button-green btn-lg mx-2"'>Maak wedstrijd aan</button>
+</div>
+
+
+{% endblock %}
