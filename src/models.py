@@ -27,3 +27,9 @@ class MatchModel(db.Model):
 
     def get_match(self):
         return pickle.loads(self.data)
+
+
+class PlayerModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    surname = db.Column(db.String(255), nullable=False)
