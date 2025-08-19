@@ -63,7 +63,7 @@ def edit_match(match_id):
 
 @app.route("/match/<int:match_id>")
 def view_match(match_id):
-    return f"Dit is de link naar match {match_id}"
+    return render_template("view_match.html", match_id=match_id)
 
 
 if __name__ == "__main__":
