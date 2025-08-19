@@ -1,3 +1,43 @@
-{% extends "base.html"%}
-{% block title%} Maak een wedstrijd aan {% endblock%}
-{% block header%} Maak een wedstrijd aan {% endblock %}
+{% extends "base.html" %}
+{% block title %} Maak een wedstrijd aan {% endblock %}
+
+
+{% block content %}
+<div class="container d-flex flex-column flex-fill overflow-auto py-3">
+    <h2 class="mb-4">Maak een nieuwe tenniswedstrijd aan</h2>
+    <form method="POST" action="{{ url_for('create_match') }}">
+        <div class="mb-3">
+            <label for="player1" class="form-label">Speler 1</label>
+            <input type="text" class="form-control" id="player1" name="player1" required>
+        </div>
+        <div class="mb-3">
+            <label for="player2" class="form-label">Speler 2</label>
+            <input type="text" class="form-control" id="player2" name="player2" required>
+        </div>
+        <div class="mb-3">
+            <label for="num_games_to_win" class="form-label">Aantal games om te winnen</label>
+            <input type="number" class="form-control" id="num_games_to_win" name="num_games_to_win" value="6" required>
+        </div>
+        <div class="mb-3">
+            <label for="best_of_num_sets" class="form-label">Best of aantal sets</label>
+            <input type="number" class="form-control" id="best_of_num_sets" name="best_of_num_sets" value="3" required>
+        </div>
+        <div class="mb-3">
+            <label for="whos_serve" class="form-label">Wie serveert eerst</label>
+            <select class="form-select" id="whos_serve" name="whos_serve" required>
+                <option value="player1">Speler 1</option>
+                <option value="player2">Speler 2</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="with_AD" class="form-label">Met Advantage (AD)</label>
+            <select class="form-select" id="with_AD" name="with_AD" required>
+                <option value="True">Ja</option>
+                <option value="False">Nee</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Maak wedstrijd aan</button>
+    </form>
+</div>
+{% endblock %}
+

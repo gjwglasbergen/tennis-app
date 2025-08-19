@@ -1,20 +1,26 @@
+/* Header & Footer */
 .footer-red {
     background-color: #c95917;
-    color: #c95917
+    color: white;
+    /* eerder stond hier dezelfde kleur als achtergrond, aangepast */
 }
 
 .header-green {
     background-color: #02503b;
-    color: white
+    color: white;
 }
 
+/* Buttons */
 .button-green {
     background-color: #02503b;
     color: white;
-    border: 2px solid #02503b
+    border: 2px solid #02503b;
+    width: 100%;
+    /* mobielvriendelijk */
 }
 
 .button-green:hover {
+<<<<<<< HEAD
     border-color: black
 }
 
@@ -47,4 +53,30 @@ main {
     padding: 0.5rem;
     min-height: 0;
     /* heel belangrijk voor iOS/Safari */
+=======
+    border-color: black;
+}
+
+/* Tekstschaling */
+h1 {
+    font-size: 2rem;
+    /* geschikt voor mobiel */
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 3rem;
+        /* grotere schermen */
+    }
+}
+
+/* Kleine schermen - minder padding voor header/footer */
+@media (max-width: 576px) {
+
+    .header-green,
+    .footer-red {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+>>>>>>> 4e065e8ee60e3fc43bfc157c6c8f9825014d4e6c
 }

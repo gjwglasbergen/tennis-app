@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 style="text-align:center;">Tennis Court</h2>
+
+<svg viewBox="0 0 512 512" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer court -->
+  <rect x="0" y="79" width="512" height="354" fill="none" stroke="black" stroke-width="3" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Left small court -->
+  <rect x="15.8" y="147.8" width="95" height="216.4" fill="none" stroke="black" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Right small court -->
+  <rect x="263.9" y="147.8" width="121.4" height="100.3" fill="none" stroke="black" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="263.9" y="263.9" width="121.4" height="100.3" fill="none" stroke="black" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Bottom and top strips -->
+  <rect x="15.8" y="131.9" width="232.2" height="36.9" fill="none" stroke="black" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="263.9" y="131.9" width="232.2" height="36.9" fill="none" stroke="black" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Middle sections -->
+  <rect x="126.7" y="248.1" width="121.4" height="116.1" fill="none" stroke="black" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+{% endblock %}
