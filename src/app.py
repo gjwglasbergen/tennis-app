@@ -63,7 +63,11 @@ def edit_match(match_id):
 
 @app.route("/match/<int:match_id>")
 def view_match(match_id):
-    return render_template("view_match.html", match_id=match_id)
+    matchmodel = MatchModel.query.get(match_id)
+    if matchmodel:
+        tennis_match = matchmodel.get_match()
+
+    return render_template("viewmatch.html", tennis_match=tennis_match)
 
 
 if __name__ == "__main__":
