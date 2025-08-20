@@ -2,7 +2,6 @@
 .footer-red {
     background-color: #c95917;
     color: white;
-    /* eerder stond hier dezelfde kleur als achtergrond, aangepast */
 }
 
 .header-green {
@@ -24,6 +23,7 @@
 }
 
 
+/* Active lampjes */
 .dot {
     height: 12px;
     width: 12px;
@@ -31,13 +31,21 @@
     display: inline-block;
 }
 
+
 .bg-success {
     background-color: #28a745;
 }
 
-/* green */
+
 .bg-danger {
     background-color: #dc3545;
 }
 
-/* red */
+body {
+    background-color: beige;
+}
+
+main {
+    padding-bottom: 60px;
+    padding-top: 10px
+}
