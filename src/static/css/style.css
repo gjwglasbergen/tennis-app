@@ -44,21 +44,22 @@ h1 {
         padding-top: 1rem;
         padding-bottom: 1rem;
     }
+}
 
-    .dot {
-        height: 12px;
-        width: 12px;
-        border-radius: 50%;
-        display: inline-block;
-    }
+.dot {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
 
-    .bg-success {
-        background-color: #28a745;
-    }
+.bg-success {
+    background-color: #28a745;
+}
 
-    /* green */
-    .bg-danger {
-        background-color: #dc3545;
-    }
+/* green */
+.bg-danger {
+    background-color: #dc3545;
+}
 
-    /* red */
+/* red */
