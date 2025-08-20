@@ -54,14 +54,16 @@ def create_match():
 
 @app.route("/matches", methods=["GET"])
 def view_matches():
-    matches = MatchModel.query.all()
-
+    matches = MatchModel.query.order_by(MatchModel.date_created.desc()).all()
     return render_template("matches.html", matches=matches)
 
 
 @app.route("/edit_match/<int:match_id>")
 def edit_match(match_id):
-    return f"Edit match {match_id}"
+    matchmodel = MatchModel.query.get(match_id)
+    if matchmodel:
+        tennis_match = matchmodel.get_match()
+    return render_template("editmatch.html", tennis_match=tennis_match)
 
 
 @app.route("/match/<int:match_id>")

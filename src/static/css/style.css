@@ -23,28 +23,6 @@
     border-color: black;
 }
 
-/* Tekstschaling */
-h1 {
-    font-size: 2rem;
-    /* geschikt voor mobiel */
-}
-
-@media (min-width: 768px) {
-    h1 {
-        font-size: 3rem;
-        /* grotere schermen */
-    }
-}
-
-/* Kleine schermen - minder padding voor header/footer */
-@media (max-width: 576px) {
-
-    .header-green,
-    .footer-red {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-    }
-}
 
 .dot {
     height: 12px;
