@@ -52,9 +52,11 @@ def create_match():
     return render_template("creatematch.html")
 
 
-@app.route("/matches")
+@app.route("/matches", methods=["GET"])
 def view_matches():
-    return "Hier kun je wedstrijden selecteren en bekijken"
+    matches = MatchModel.query.all()
+
+    return render_template("matches.html", matches=matches)
 
 
 @app.route("/edit_match/<int:match_id>")
