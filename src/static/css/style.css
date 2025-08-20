@@ -20,40 +20,6 @@
 }
 
 .button-green:hover {
-<<<<<<< HEAD
-    border-color: black
-}
-
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    /* voorkom scroll */
-}
-
-header,
-footer {
-    flex-shrink: 0;
-    /* header/footer behouden hun grootte */
-    text-align: center;
-    padding: 0.5rem 1rem;
-}
-
-main {
-    flex: 1;
-    /* neemt alle resterende ruimte */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5rem;
-    min-height: 0;
-    /* heel belangrijk voor iOS/Safari */
-=======
     border-color: black;
 }
 
@@ -78,5 +44,4 @@ h1 {
         padding-top: 1rem;
         padding-bottom: 1rem;
     }
->>>>>>> 4e065e8ee60e3fc43bfc157c6c8f9825014d4e6c
 }
