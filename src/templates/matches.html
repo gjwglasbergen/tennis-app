@@ -14,16 +14,16 @@
                 <th>Active</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="matchesBody">
             {% for match in matches %}
-            <tr>
+            <tr id="match-{{ match.id }}">
                 <td>{{ match.date_created.strftime("%Y-%m-%d") }}</td>
                 <td>{{ match.player1 }}</td>
                 <td>{{ match.player2 }}</td>
                 <td>
                     <a href="{{ url_for('view_match', match_id=match.id) }}" class="btn btn-sm btn-primary">View</a>
                 </td>
-                <td>
+                <td class="status-cell">
                     {% if match.active %}
                     <span class="dot bg-success"></span>
                     {% else %}
@@ -46,4 +46,24 @@
         </tfoot>
     </table>
 </div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.min.js"></script>
+<script>
+    const socket = io(window.location.origin);
+
+    // Debug
+    console.log("Socket.IO connected:", socket);
+
+    socket.on('match_status_updated', (data) => {
+        console.log("Update received:", data); // check of het event aankomt
+
+        const row = document.getElementById(`match-${data.match_id}`);
+        if (!row) return;
+
+        const statusCell = row.querySelector('.status-cell');
+        statusCell.innerHTML = data.is_online
+            ? '<span class="dot bg-success"></span>'
+            : '<span class="dot bg-danger"></span>';
+    });
+</script>
+
 {% endblock content %}

@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_socketio import SocketIO
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_socketio import SocketIO, join_room, leave_room
 from models import db, MatchModel
 from tennis.match import TennisMatch
 
@@ -7,13 +7,11 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "tennisgoof"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////data/app.db"
 
-
 db.init_app(app)
-
 with app.app_context():
     db.create_all()
 
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @app.route("/")
@@ -52,27 +50,68 @@ def create_match():
     return render_template("creatematch.html")
 
 
-@app.route("/matches", methods=["GET", "POST"])
+@app.route("/matches", methods=["GET"])
 def view_matches():
     matches = MatchModel.query.order_by(MatchModel.date_created.desc()).all()
     return render_template("matches.html", matches=matches)
 
 
-@app.route("/match/<int:match_id>/edit", methods=["GET", "POST"])
+@app.route("/match/<int:match_id>/edit", methods=["GET"])
 def edit_match(match_id):
     matchmodel = MatchModel.query.get(match_id)
-    if matchmodel:
-        tennis_match = matchmodel.get_match()
-    return render_template("editmatch.html", tennis_match=tennis_match)
+    if not matchmodel:
+        return jsonify({"status": "error", "message": "Match not found"}), 404
+
+    tennis_match = matchmodel.get_match()
+    return render_template(
+        "editmatch.html", tennis_match=tennis_match, match_id=match_id
+    )
+
+
+@app.route("/match/<int:match_id>/toggle-status", methods=["POST"])
+def toggle_status(match_id):
+    match = MatchModel.query.get(match_id)
+    if not match:
+        return jsonify({"status": "error", "message": "Match not found"}), 404
+
+    # Update match status
+    is_online = request.json.get("is_online", False)
+    match.active = is_online
+    db.session.commit()
+
+    # Emit event to all clients
+    socketio.emit(
+        "match_status_updated",
+        {"match_id": match_id, "is_online": is_online},
+        broadcast=True,  # <- belangrijk zodat iedereen het krijgt
+    )
+
+    return jsonify({"status": "success", "is_online": is_online})
 
 
 @app.route("/match/<int:match_id>")
 def view_match(match_id):
     matchmodel = MatchModel.query.get(match_id)
-    if matchmodel:
-        tennis_match = matchmodel.get_match()
+    if not matchmodel:
+        return "Match not found", 404
 
+    tennis_match = matchmodel.get_match()
     return render_template("viewmatch.html", tennis_match=tennis_match)
+
+
+# SocketIO events
+@socketio.on("join_match_room")
+def handle_join_room(data):
+    match_id = data.get("match_id")
+    if match_id:
+        join_room(f"match_{match_id}")
+
+
+@socketio.on("leave_match_room")
+def handle_leave_room(data):
+    match_id = data.get("match_id")
+    if match_id:
+        leave_room(f"match_{match_id}")
 
 
 if __name__ == "__main__":
