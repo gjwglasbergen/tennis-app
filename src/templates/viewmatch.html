@@ -1,7 +1,55 @@
 {% extends "base.html" %}
 
-{% block title%}Edit wedstrijd{%endblock%}
+{% block title %}Edit wedstrijd{% endblock %}
 
 {% block content %}
+<div class="container mt-4">
+    <!-- Bovenste rij: Spelers en score in één lijn op alle schermen -->
+    <div class="d-flex justify-content-between align-items-center text-center flex-wrap">
+        <div class="p-2 flex-fill">
+            <h1>{{ tennis_match.player1 }}</h1>
+        </div>
+        <div class="p-2 flex-fill">
+            <h1>15-0</h1>
+        </div>
+        <div class="p-2 flex-fill">
+            <h1>{{ tennis_match.player2 }}</h1>
+        </div>
+    </div>
 
+    <!-- Score tabel -->
+    <div class="row mt-3 text-center">
+        <div class="col-12">
+            <div class="p-3">
+                <table class="table table-bordered table-striped table-hover w-auto mx-auto text-center align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th></th>
+                            <th>Set 1</th>
+                            <th>Set 2</th>
+                            <th>Set 3</th>
+                            <th>Game</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">{{ tennis_match.player1 }}</th>
+                            <td>1</td>
+                            <td>6</td>
+                            <td>5</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ tennis_match.player2 }}</th>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

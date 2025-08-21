@@ -3,23 +3,77 @@
 {% block title %}Edit wedstrijd{% endblock %}
 
 {% block content %}
-<div class="scoreboard d-flex justify-content-between align-items-center w-100">
-
-    <!-- Linker knop -->
-    <button class="btn btn-lg btn-success">
-        <i class="bi bi-plus-circle"></i> {{tennis_match.player1}}
-    </button>
-
-    <!-- Score midden -->
-    <div class="score text-center flex-grow-1">
-        <h2 class="display-3">{{tennis_match}}</h2>
-        <p class="text-muted">Set 1</p>
+<div class="container mt-4">
+    <!-- Online/Offline toggle bovenaan -->
+    <div class="d-flex justify-content-center mb-4">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="matchStatus" {% if tennis_match.is_online %}checked{%
+                endif %}>
+            <label class="form-check-label" for="matchStatus">
+                {% if tennis_match.is_online %}Online{% else %}Offline{% endif %}
+            </label>
+        </div>
+    </div>
+    <!-- Bovenste rij: Spelers en score responsief en gecentreerd -->
+    <div class="d-flex justify-content-between align-items-center text-center flex-wrap">
+        <div class="p-2 flex-fill text-center">
+            <button class="btn btn-lg btn-primary w-100">{{ tennis_match.player1 }}</button>
+        </div>
+        <div class="p-2 flex-fill text-center">
+            <h1 class="m-0">15-0</h1>
+        </div>
+        <div class="p-2 flex-fill text-center">
+            <button class="btn btn-lg btn-primary w-100">{{ tennis_match.player2 }}</button>
+        </div>
     </div>
 
-    <!-- Rechter knop -->
-    <button class="btn btn-lg btn-danger">
-        <i class="bi bi-plus-circle"></i> {{tennis_match.player2}}
-    </button>
+    <!-- Score tabel -->
+    <div class="row mt-3 text-center">
+        <div class="col-12">
+            <div class="p-3">
+                <table class="table table-bordered table-striped table-hover w-auto mx-auto text-center align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th></th>
+                            <th>Set 1</th>
+                            <th>Set 2</th>
+                            <th>Set 3</th>
+                            <th>Game</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">{{ tennis_match.player1 }}</th>
+                            <td>1</td>
+                            <td>6</td>
+                            <td>5</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ tennis_match.player2 }}</th>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
+    <!-- Checkboxes inline -->
+    <div class="row mt-3 text-center">
+        <div class="col-12">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="Test1">
+                <label class="form-check-label" for="Test1">Winner</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="Test2">
+                <label class="form-check-label" for="Test2">Dropshot</label>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
