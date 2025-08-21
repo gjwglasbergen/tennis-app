@@ -52,13 +52,13 @@ def create_match():
     return render_template("creatematch.html")
 
 
-@app.route("/matches", methods=["GET"])
+@app.route("/matches", methods=["GET", "POST"])
 def view_matches():
     matches = MatchModel.query.order_by(MatchModel.date_created.desc()).all()
     return render_template("matches.html", matches=matches)
 
 
-@app.route("/edit_match/<int:match_id>")
+@app.route("/match/<int:match_id>/edit", methods=["GET", "POST"])
 def edit_match(match_id):
     matchmodel = MatchModel.query.get(match_id)
     if matchmodel:

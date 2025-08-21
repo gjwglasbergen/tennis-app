@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 
-{% block title%}Edit wedstrijd{%endblock%}
+{% block title %}Edit wedstrijd{% endblock %}
 
 {% block content %}
-<div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-    <!-- Linker naam -->
-    <div style="font-weight: bold;">{{tennis_match['player1']}}</div>
+<div class="scoreboard d-flex justify-content-between align-items-center w-100">
 
-    <!-- Afbeelding veld -->
-    <img src="{{ url_for('static', filename='tenniscourt.svg') }}" alt="Tennis Court"
-        style="max-width: 400px; height: auto;">
+    <!-- Linker knop -->
+    <button class="btn btn-lg btn-success">
+        <i class="bi bi-plus-circle"></i> {{tennis_match.player1}}
+    </button>
 
-    <!-- Rechter naam -->
-    <div style="font-weight: bold;">{{tennis_match['player2']}}</div>
+    <!-- Score midden -->
+    <div class="score text-center flex-grow-1">
+        <h2 class="display-3">{{tennis_match}}</h2>
+        <p class="text-muted">Set 1</p>
+    </div>
+
+    <!-- Rechter knop -->
+    <button class="btn btn-lg btn-danger">
+        <i class="bi bi-plus-circle"></i> {{tennis_match.player2}}
+    </button>
+
 </div>
 {% endblock %}

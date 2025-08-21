@@ -1,16 +1,7 @@
 {% extends "base.html" %}
-{% block title%}Bekijk wedstrijd{%endblock%}
+
+{% block title%}Edit wedstrijd{%endblock%}
 
 {% block content %}
-<div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-      <!-- Linker naam -->
-      <div style="font-weight: bold;">{{tennis_match['player1']}}</div>
 
-      <!-- Afbeelding veld -->
-      <img src="{{ url_for('static', filename='tenniscourt.svg') }}" alt="Tennis Court"
-            style="max-width: 400px; height: auto;">
-
-      <!-- Rechter naam -->
-      <div style="font-weight: bold;">{{tennis_match['player2']}}</div>
-</div>
 {% endblock %}
