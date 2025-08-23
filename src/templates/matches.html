@@ -46,24 +46,5 @@
         </tfoot>
     </table>
 </div>
-<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.min.js"></script>
-<script>
-    const socket = io(window.location.origin);
-
-    // Debug
-    console.log("Socket.IO connected:", socket);
-
-    socket.on('match_status_updated', (data) => {
-        console.log("Update received:", data); // check of het event aankomt
-
-        const row = document.getElementById(`match-${data.match_id}`);
-        if (!row) return;
-
-        const statusCell = row.querySelector('.status-cell');
-        statusCell.innerHTML = data.is_online
-            ? '<span class="dot bg-success"></span>'
-            : '<span class="dot bg-danger"></span>';
-    });
-</script>
 
 {% endblock content %}

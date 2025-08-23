@@ -14,59 +14,6 @@
             </label>
         </div>
     </div>
-    <!-- Flikker-effect CSS -->
-    <style>
-        @keyframes blink {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        .blink {
-            animation: blink 0.5s ease-in-out 2;
-        }
-    </style>
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.min.js"></script>
-    <script>
-        const matchId = {{ match_id }};
-        const checkbox = document.getElementById('matchStatus');
-        const label = checkbox.nextElementSibling;
-        const socket = io();
-
-        // Join match room voor alleen relevante updates
-        socket.emit('join_match_room', { match_id: matchId });
-
-        // Toggle status via fetch POST
-        checkbox.addEventListener('change', () => {
-            const isOnline = checkbox.checked;
-            label.textContent = isOnline ? 'Online' : 'Offline';
-
-            fetch(`/match/${matchId}/toggle-status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ is_online: isOnline })
-            });
-        });
-
-        // Ontvangen van live updates
-        socket.on('match_status_updated', (data) => {
-            if (data.match_id === matchId) {
-                checkbox.checked = data.is_online;
-                label.textContent = data.is_online ? 'Online' : 'Offline';
-                label.classList.add('blink');
-                setTimeout(() => label.classList.remove('blink'), 1000);
-            }
-        });
-    </script>
 
     <!-- Bovenste rij: Spelers en score responsief en gecentreerd -->
     <div class="d-flex justify-content-between align-items-center text-center flex-wrap">
