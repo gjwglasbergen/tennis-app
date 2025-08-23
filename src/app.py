@@ -68,27 +68,6 @@ def edit_match(match_id):
     )
 
 
-@app.route("/match/<int:match_id>/toggle-status", methods=["POST"])
-def toggle_status(match_id):
-    match = MatchModel.query.get(match_id)
-    if not match:
-        return jsonify({"status": "error", "message": "Match not found"}), 404
-
-    # Update match status
-    is_online = request.json.get("is_online", False)
-    match.active = is_online
-    db.session.commit()
-
-    # Emit event to all clients
-    socketio.emit(
-        "match_status_updated",
-        {"match_id": match_id, "is_online": is_online},
-        broadcast=True,  # <- belangrijk zodat iedereen het krijgt
-    )
-
-    return jsonify({"status": "success", "is_online": is_online})
-
-
 @app.route("/match/<int:match_id>")
 def view_match(match_id):
     matchmodel = MatchModel.query.get(match_id)
