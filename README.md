@@ -93,7 +93,7 @@ classDiagram
 ### SOLID Principles Applied
 
 | Principle | Implementation |
-| must | |
+|---|---|
 | **S**ingle Responsibility | `PointScorer` for points, `Game` for game rules, `Set` for sets. |
 | **O**pen/Closed | Scoring strategies (`AdvantagePointScorer`) can be added without changing core logic. |
 | **L**iskov Substitution | `AdvantagePointScorer` and `NoAdvantagePointScorer` are interchangeable. |
