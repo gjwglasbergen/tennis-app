@@ -3,53 +3,110 @@
 {% block title %}Edit wedstrijd{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <!-- Bovenste rij: Spelers en score in één lijn op alle schermen -->
-    <div class="d-flex justify-content-between align-items-center text-center flex-wrap">
-        <div class="p-2 flex-fill">
-            <h1>{{ tennis_match.player1 }}</h1>
-        </div>
-        <div class="p-2 flex-fill">
-            <h1>15-0</h1>
-        </div>
-        <div class="p-2 flex-fill">
-            <h1>{{ tennis_match.player2 }}</h1>
-        </div>
-    </div>
 
-    <!-- Score tabel -->
-    <div class="row mt-3 text-center">
-        <div class="col-12">
-            <div class="p-3">
-                <table class="table table-bordered table-striped table-hover w-auto mx-auto text-center align-middle">
-                    <thead class="table-primary">
-                        <tr>
-                            <th></th>
-                            <th>Set 1</th>
-                            <th>Set 2</th>
-                            <th>Set 3</th>
-                            <th>Game</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">{{ tennis_match.player1 }}</th>
-                            <td>1</td>
-                            <td>6</td>
-                            <td>5</td>
-                            <td>15</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ tennis_match.player2 }}</th>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+<!-- Score Display -->
+<div id="scoreboard" class="d-flex justify-content-between align-items-center text-center flex-wrap mb-4">
+    <div class="p-2 flex-fill">
+        <h1 id="p1-name">{{ tennis_match.player1 }}</h1>
+        {% if mode == 'broadcast' %}
+        <button class="btn btn-success btn-lg mt-2" onclick="scorePoint(1)">Point {{ tennis_match.player1 }}</button>
+        {% endif %}
+    </div>
+    <div class="p-2 flex-fill display-1 fw-bold">
+        <span id="score-display">0-0</span>
+    </div>
+    <div class="p-2 flex-fill">
+        <h1 id="p2-name">{{ tennis_match.player2 }}</h1>
+        {% if mode == 'broadcast' %}
+        <button class="btn btn-success btn-lg mt-2" onclick="scorePoint(2)">Point {{ tennis_match.player2 }}</button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Winner Announcement -->
+<div id="winner-banner" class="alert alert-success text-center d-none">
+    <h2 id="winner-text"></h2>
+</div>
+
+<!-- Stats Table -->
+<div class="row mt-3 text-center">
+    <div class="col-12">
+        <div class="p-3">
+            <table class="table table-bordered table-striped w-auto mx-auto text-center align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Player</th>
+                        <th>Sets</th>
+                        <th>Games</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" id="table-p1-name">{{ tennis_match.player1 }}</th>
+                        <td id="p1-sets">0</td>
+                        <td id="p1-games">0</td>
+                        <td id="p1-points">0</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" id="table-p2-name">{{ tennis_match.player2 }}</th>
+                        <td id="p2-sets">0</td>
+                        <td id="p2-games">0</td>
+                        <td id="p2-points">0</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('connect', () => {
+        console.log('Connected to server');
+    });
+
+    socket.on('match_update', (data) => {
+        console.log('Match update:', data);
+        updateUI(data);
+    });
+
+    function scorePoint(player) {
+        socket.emit('score_update', { player: player });
+    }
+
+    function updateUI(data) {
+        // Names
+        document.getElementById('p1-name').innerText = data.p1_name;
+        document.getElementById('p2-name').innerText = data.p2_name;
+        document.getElementById('table-p1-name').innerText = data.p1_name;
+        document.getElementById('table-p2-name').innerText = data.p2_name;
+
+        // Current Game Score
+        // data.current_set_score is sets games "6-4"
+        // data.p1_points is "15", "30" etc
+        document.getElementById('score-display').innerText = `${data.p1_points}-${data.p2_points}`;
+
+        // Table Stats
+        document.getElementById('p1-sets').innerText = data.p1_sets;
+        document.getElementById('p2-sets').innerText = data.p2_sets;
+        document.getElementById('p1-games').innerText = data.p1_games;
+        document.getElementById('p2-games').innerText = data.p2_games;
+        document.getElementById('p1-points').innerText = data.p1_points;
+        document.getElementById('p2-points').innerText = data.p2_points;
+
+        // Winner
+        const banner = document.getElementById('winner-banner');
+        if (data.winner) {
+            banner.classList.remove('d-none');
+            document.getElementById('winner-text').innerText = `${data.winner} Wins!`;
+            // Disable buttons?
+        } else {
+            banner.classList.add('d-none');
+        }
+    }
+</script>
 {% endblock %}
