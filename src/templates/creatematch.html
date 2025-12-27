@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container d-flex flex-column flex-fill overflow-auto py-3">
     <h2 class="mb-4">Maak een nieuwe tenniswedstrijd aan</h2>
-    <form method="POST" action="{{ url_for('create_match') }}">
+    <form method="POST" action="{{ url_for('match.create_match') }}">
         <div class="mb-3">
             <label for="player1" class="form-label">Speler 1</label>
             <input type="text" class="form-control" id="player1" name="player1" required>

@@ -21,7 +21,8 @@
                 <td>{{ match.player1 }}</td>
                 <td>{{ match.player2 }}</td>
                 <td>
-                    <a href="{{ url_for('view_match', match_id=match.id) }}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{{ url_for('match.view_match', match_id=match.id) }}"
+                        class="btn btn-sm btn-primary">View</a>
                 </td>
                 <td class="status-cell">
                     {% if match.active %}
