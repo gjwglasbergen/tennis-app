@@ -1,5 +1,7 @@
 import os
 import logging
+import json
+from datetime import datetime, timezone, timedelta
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from flask_socketio import SocketIO, join_room, leave_room
 from flask_wtf.csrf import CSRFProtect
@@ -98,7 +100,7 @@ def create_match():
 
             whos_serve_player = request.form["whos_serve"]
             whos_serve = request.form[whos_serve_player]
-            with_AD = request.form["with_AD"]
+            with_AD = request.form["with_AD"] == "True"  # Convert string to boolean
 
             matchFormat = {
                 "num_games_to_win": num_games_to_win,
@@ -138,6 +140,27 @@ def create_match():
 @app.route("/matches", methods=["GET"])
 def view_matches():
     matches = MatchModel.query.order_by(MatchModel.date_created.desc()).all()
+    
+    # Update active status based on 30 minute timeout
+    now = datetime.now(timezone.utc)
+    for match in matches:
+        match_data = match.get_match()
+        # Check if match has a winner
+        if match_data.get('winner', ''):
+            if match.active:
+                match.active = False
+        # Check if last update was more than 30 minutes ago
+        elif match.active and match.last_updated:
+            # Make sure last_updated is timezone aware
+            last_updated = match.last_updated
+            if last_updated.tzinfo is None:
+                last_updated = last_updated.replace(tzinfo=timezone.utc)
+            
+            time_diff = now - last_updated
+            if time_diff > timedelta(minutes=30):
+                match.active = False
+    
+    db.session.commit()
     return render_template("matches.html", matches=matches)
 
 
@@ -148,8 +171,9 @@ def edit_match(match_id):
         return jsonify({"status": "error", "message": "Match not found"}), 404
 
     tennis_match = matchmodel.get_match()
+    has_backup = matchmodel.backup_data is not None
     return render_template(
-        "editmatch.html", tennis_match=tennis_match, match_id=match_id
+        "editmatch.html", tennis_match=tennis_match, match_id=match_id, has_backup=has_backup
     )
 
 
@@ -160,7 +184,108 @@ def view_match(match_id):
         return "Match not found", 404
 
     tennis_match = matchmodel.get_match()
-    return render_template("viewmatch.html", tennis_match=tennis_match)
+    return render_template("viewmatch.html", tennis_match=tennis_match, match_id=match_id)
+
+
+@app.route("/match/<int:match_id>/data", methods=["GET"])
+def get_match_data(match_id):
+    """Get match data as JSON for live updates."""
+    matchmodel = MatchModel.query.get(match_id)
+    if not matchmodel:
+        return jsonify({"status": "error", "message": "Match not found"}), 404
+    
+    tennis_match = matchmodel.get_match()
+    return jsonify({
+        "status": "success",
+        "match": tennis_match,
+        "active": matchmodel.active
+    })
+
+
+@app.route("/match/<int:match_id>/add-point", methods=["POST"])
+def add_point(match_id):
+    """Add a point to a player."""
+    try:
+        matchmodel = MatchModel.query.get(match_id)
+        if not matchmodel:
+            return jsonify({"status": "error", "message": "Match not found"}), 404
+
+        data = request.get_json()
+        player = data.get("player")
+        
+        if not player:
+            return jsonify({"status": "error", "message": "Player required"}), 400
+
+        # Get the current match state
+        from tennis.match import TennisMatch
+        match_dict = matchmodel.get_match()
+        
+        # Recreate TennisMatch object
+        tennis_match = TennisMatch(
+            player1=match_dict["player1"],
+            player2=match_dict["player2"],
+            matchFormat=match_dict["matchFormat"]
+        )
+        tennis_match.__dict__.update(match_dict)
+        
+        # Backup current state before adding point (save as JSON string)
+        matchmodel.backup_data = matchmodel.data
+        
+        # Add the point
+        tennis_match.win_point(player)
+        
+        # Update match state
+        matchmodel.set_match(tennis_match)
+        matchmodel.last_updated = datetime.now(timezone.utc)
+        
+        # Check if match is won
+        match_dict_updated = matchmodel.get_match()
+        if match_dict_updated.get('winner', ''):
+            matchmodel.active = False
+        else:
+            matchmodel.active = True
+        
+        db.session.commit()
+        
+        # Get updated state
+        updated_match = matchmodel.get_match()
+        
+        logger.info(f"Point added for {player} in match {match_id}")
+        return jsonify({"status": "success", "match": updated_match})
+        
+    except Exception as e:
+        logger.error(f"Error adding point: {str(e)}")
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route("/match/<int:match_id>/undo", methods=["POST"])
+def undo_point(match_id):
+    """Undo the last point."""
+    try:
+        matchmodel = MatchModel.query.get(match_id)
+        if not matchmodel:
+            return jsonify({"status": "error", "message": "Match not found"}), 404
+
+        if not matchmodel.backup_data:
+            return jsonify({"status": "error", "message": "No backup available"}), 400
+
+        # Simply restore the backup data directly
+        backup_data = matchmodel.backup_data
+        matchmodel.data = backup_data
+        matchmodel.backup_data = None  # Clear backup after use
+        db.session.commit()
+        
+        # Get updated state
+        updated_match = matchmodel.get_match()
+        
+        logger.info(f"Undo performed for match {match_id}")
+        return jsonify({"status": "success", "match": updated_match})
+        
+    except Exception as e:
+        logger.error(f"Error undoing point: {str(e)}")
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 # SocketIO events
