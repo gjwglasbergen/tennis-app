@@ -24,8 +24,12 @@ class MatchModel(db.Model):
     date_created = db.Column(
         db.DateTime, nullable=False, default=datetime.now(timezone.utc), index=True
     )
+    last_updated = db.Column(
+        db.DateTime, nullable=False, default=datetime.now(timezone.utc), index=True
+    )
     active = db.Column(db.Boolean, nullable=False, default=False)
     data = db.Column(db.Text, nullable=False)  # Store JSON instead of pickle
+    backup_data = db.Column(db.Text, nullable=True)  # Store backup for undo
 
     def __init__(self, player1: str, player2: str, active: bool = False):
         """Initialize a new match.

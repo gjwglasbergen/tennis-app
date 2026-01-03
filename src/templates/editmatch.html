@@ -4,8 +4,9 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Online/Offline toggle bovenaan -->
-    <div class="d-flex justify-content-center mb-4">
+    <!-- Online/Offline toggle en Undo knop bovenaan -->
+    <div class="d-flex justify-content-center align-items-center mb-4 gap-3">
+        <button class="btn btn-warning" id="undoBtn" {% if not has_backup %}disabled{% endif %}>↶ Undo</button>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="matchStatus" {% if tennis_match.is_online %}checked{%
                 endif %}>
@@ -18,13 +19,13 @@
     <!-- Bovenste rij: Spelers en score responsief en gecentreerd -->
     <div class="d-flex justify-content-between align-items-center text-center flex-wrap">
         <div class="p-2 flex-fill text-center">
-            <button class="btn btn-lg btn-primary w-100">{{ tennis_match.player1 }}</button>
+            <button class="btn btn-lg btn-primary w-100" id="player1Btn" data-player="{{ tennis_match.player1 }}">{{ tennis_match.player1 }}</button>
         </div>
         <div class="p-2 flex-fill text-center">
-            <h1 class="m-0">15-0</h1>
+            <h1 class="m-0" id="gameScore">{{ tennis_match.gameScore[tennis_match.player1] }}-{{ tennis_match.gameScore[tennis_match.player2] }}</h1>
         </div>
         <div class="p-2 flex-fill text-center">
-            <button class="btn btn-lg btn-primary w-100">{{ tennis_match.player2 }}</button>
+            <button class="btn btn-lg btn-primary w-100" id="player2Btn" data-player="{{ tennis_match.player2 }}">{{ tennis_match.player2 }}</button>
         </div>
     </div>
 
@@ -45,17 +46,17 @@
                     <tbody>
                         <tr>
                             <th scope="row">{{ tennis_match.player1 }}</th>
-                            <td>1</td>
-                            <td>6</td>
-                            <td>5</td>
-                            <td>15</td>
+                            {% for set in tennis_match.setHistory %}
+                            <td>{{ set[tennis_match.player1] }}</td>
+                            {% endfor %}
+                            <td>{{ tennis_match.setScore[tennis_match.player1] }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{ tennis_match.player2 }}</th>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>0</td>
+                            {% for set in tennis_match.setHistory %}
+                            <td>{{ set[tennis_match.player2] }}</td>
+                            {% endfor %}
+                            <td>{{ tennis_match.setScore[tennis_match.player2] }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -78,4 +79,74 @@
     </div>
 
 </div>
+
+<script>
+    const matchId = {{ match_id }};
+    const player1 = "{{ tennis_match.player1 }}";
+    const player2 = "{{ tennis_match.player2 }}";
+
+    // Add event listeners to player buttons
+    document.getElementById('player1Btn').addEventListener('click', function() {
+        addPoint(player1);
+    });
+
+    document.getElementById('player2Btn').addEventListener('click', function() {
+        addPoint(player2);
+    });
+
+    document.getElementById('undoBtn').addEventListener('click', function() {
+        undoPoint();
+    });
+
+    async function addPoint(player) {
+        try {
+            const response = await fetch(`/match/${matchId}/add-point`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ player: player })
+            });
+
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Reload the page to show updated scores
+                location.reload();
+            } else {
+                console.error('Error:', data.message);
+                alert('Error adding point: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error adding point');
+        }
+    }
+
+    async function undoPoint() {
+        try {
+            const response = await fetch(`/match/${matchId}/undo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                }
+            });
+
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Reload the page to show updated scores
+                location.reload();
+            } else {
+                console.error('Error:', data.message);
+                alert('Error undoing point: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error undoing point');
+        }
+    }
+</script>
 {% endblock %}

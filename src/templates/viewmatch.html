@@ -10,7 +10,7 @@
             <h1>{{ tennis_match.player1 }}</h1>
         </div>
         <div class="p-2 flex-fill">
-            <h1>15-0</h1>
+            <h1>{{ tennis_match.gameScore[tennis_match.player1] }}-{{ tennis_match.gameScore[tennis_match.player2] }}</h1>
         </div>
         <div class="p-2 flex-fill">
             <h1>{{ tennis_match.player2 }}</h1>
@@ -34,22 +34,35 @@
                     <tbody>
                         <tr>
                             <th scope="row">{{ tennis_match.player1 }}</th>
-                            <td>1</td>
-                            <td>6</td>
-                            <td>5</td>
-                            <td>15</td>
+                            {% for set in tennis_match.setHistory %}
+                            <td>{{ set[tennis_match.player1] }}</td>
+                            {% endfor %}
+                            <td>{{ tennis_match.setScore[tennis_match.player1] }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{ tennis_match.player2 }}</th>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>0</td>
+                            {% for set in tennis_match.setHistory %}
+                            <td>{{ set[tennis_match.player2] }}</td>
+                            {% endfor %}
+                            <td>{{ tennis_match.setScore[tennis_match.player2] }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    
+    {% if tennis_match.winner %}
+    <div class="alert alert-success text-center mt-3">
+        <h3>🏆 Winnaar: {{ tennis_match.winner }}</h3>
+    </div>
+    {% endif %}
 </div>
+
+<script>
+    // Reload the page every 5 seconds to show latest scores
+    setTimeout(function() {
+        location.reload();
+    }, 5000);
+</script>
 {% endblock %}
