@@ -1,0 +1,12 @@
+credentials:
+  usernames:
+    admin:
+      email: admin@example.com
+      name: Admin
+      # Default password: tennis123 (change this after first login!)
+      password: "$2b$12$7bKZvTdGYFBm9tOjmEzMQecqHsGv7XkGpFUi3OJwP2mFvdT4kI5.u"
+
+cookie:
+  expiry_days: 7
+  key: tennis_tracker_secret_key_change_me
+  name: tennis_tracker_cookie
